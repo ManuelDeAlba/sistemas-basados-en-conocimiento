@@ -1,6 +1,6 @@
 (deffacts celulares
     (celular (tipoproducto 1) (idproducto 1) (marca "Samsung") (modelo "Galaxy S21") (precio 799) (color negro) (stock 50))
-    (celular (tipoproducto 1) (idproducto 2) (marca "Apple") (modelo "iPhone 13") (precio 999) (color blanco) (stock 30))
+    (celular (tipoproducto 1) (idproducto 2) (marca "Apple") (modelo "iPhone 16") (precio 999) (color blanco) (stock 30))
     (celular (tipoproducto 1) (idproducto 3) (marca "Xiaomi") (modelo "Mi 11") (precio 749) (color rojo) (stock 20))
     (celular (tipoproducto 1) (idproducto 4) (marca "OnePlus") (modelo "9 Pro") (precio 969) (color azul) (stock 15))
     (celular (tipoproducto 1) (idproducto 5) (marca "Google") (modelo "Pixel 6") (precio 599) (color amarillo) (stock 25))
@@ -19,9 +19,9 @@
 )
 
 (deffacts tarjetas
-    (tarjeta (banco BBVA) (grupo visa) (fecha-exp 12/25))
-    (tarjeta (banco NU) (grupo mastercard) (fecha-exp 12/27))
-    (tarjeta (banco Santander mastercard) (grupo VISA) (fecha-exp 12/25))
+    (tarjeta (banco bbva) (grupo visa) (fecha-exp 12/25))
+    (tarjeta (banco nu) (grupo mastercard) (fecha-exp 12/27))
+    (tarjeta (banco banamex) (grupo visa) (fecha-exp 12/28))
 )
 
 (deffacts clientes
@@ -33,9 +33,9 @@
 )
 
 (deffacts ordenes
-    (orden (id 1) (tipoproducto 1) (idproducto 1) (idcliente 1) (cantidad 1))
-    (orden (id 2) (tipoproducto 2) (idproducto 3) (idcliente 2) (cantidad 2))
-    (orden (id 3) (tipoproducto 3) (idproducto 2) (idcliente 3) (cantidad 4))
+    (orden (id 1) (tipoproducto 1) (idproducto 1) (idcliente 1) (tarjeta banamex) (cantidad 1))
+    (orden (id 2) (tipoproducto 2) (idproducto 3) (idcliente 2) (tarjeta banamex) (cantidad 2))
+    (orden (id 3) (tipoproducto 3) (idproducto 2) (idcliente 3) (tarjeta banamex) (cantidad 4))
 )
 
 (deffacts vales

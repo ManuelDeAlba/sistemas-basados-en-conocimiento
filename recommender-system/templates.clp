@@ -43,6 +43,7 @@
     (slot tipoproducto)
     (slot idproducto)
     (slot idcliente)
+    (slot tarjeta)
     (slot cantidad)
 )
 
