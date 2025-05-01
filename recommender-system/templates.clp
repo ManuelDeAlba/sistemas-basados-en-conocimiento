@@ -39,7 +39,7 @@
 )
 
 (deftemplate orden
-    (slot id)
+    (slot id (default-dynamic (gensym*)))
     (slot tipoproducto)
     (slot idproducto)
     (slot idcliente)
@@ -48,7 +48,7 @@
 )
 
 (deftemplate vale
-    (slot id)
+    (slot id (default-dynamic (gensym*)))
     (slot idcliente)
-    (slot texto)
+    (multislot texto)
 )
