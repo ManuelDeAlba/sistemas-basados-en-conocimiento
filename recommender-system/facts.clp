@@ -22,6 +22,7 @@
     (tarjeta (banco bbva) (grupo visa) (fecha-exp 12/25))
     (tarjeta (banco nu) (grupo mastercard) (fecha-exp 12/27))
     (tarjeta (banco banamex) (grupo visa) (fecha-exp 12/28))
+    (tarjeta (banco liverpool) (grupo visa) (fecha-exp 11/28))
 )
 
 (deffacts clientes
@@ -29,16 +30,20 @@
     (cliente (id 2) (nombre Daniela) (edad 26))
     (cliente (id 3) (nombre Itzel) (edad 20))
     (cliente (id 4) (nombre Leonardo) (edad 15))
-    (cliente (id 1) (nombre Naomi) (edad 15))
+    (cliente (id 5) (nombre Naomi) (edad 15))
 )
 
 (deffacts ordenes
-    (orden (id 1) (tipoproducto 1) (idproducto 1) (idcliente 1) (tarjeta banamex) (cantidad 1))
-    (orden (id 2) (tipoproducto 2) (idproducto 3) (idcliente 2) (tarjeta banamex) (cantidad 2))
-    (orden (id 3) (tipoproducto 3) (idproducto 2) (idcliente 3) (tarjeta banamex) (cantidad 4))
+    (orden (id 1) (tipoproducto 1) (idproducto 2) (idcliente 1) (tarjeta banamex) (cantidad 1))
+    (orden (id 2) (tipoproducto 1) (idproducto 2) (idcliente 1) (tarjeta contado) (cantidad 1))
+    (orden (id 3) (tipoproducto 2) (idproducto 3) (idcliente 2) (tarjeta banamex) (cantidad 2))
+    (orden (id 4) (tipoproducto 1) (idproducto 1) (idcliente 3) (tarjeta liverpool) (cantidad 1))
+    (orden (id 5) (tipoproducto 2) (idproducto 3) (idcliente 1) (tarjeta contado) (cantidad 3))
+    (orden (id 6) (tipoproducto 1) (idproducto 1) (idcliente 1) (tarjeta nu) (cantidad 999))
+    (orden (id 7) (tipoproducto 2) (idproducto 1) (idcliente 1) (tarjeta nu) (cantidad 999))
+    (orden (id 8) (tipoproducto 3) (idproducto 1) (idcliente 1) (tarjeta nu) (cantidad 999))
 )
 
 (deffacts vales
-    (vale (id 1) (idcliente 1) (texto "Felicidades, has ganado un vale de descuento del 10% en tu próxima compra."))
-    (vale (id 2) (idcliente 2) (texto "Felicidades, has ganado un vale de descuento del 15% en tu próxima compra."))
+    
 )
