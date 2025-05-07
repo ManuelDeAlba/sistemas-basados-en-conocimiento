@@ -51,3 +51,23 @@
 (assert (orden (id 10) (tipoproducto 1) (idproducto 5) (idcliente 5) (tarjeta bbva) (cantidad 10))) ; Celular | Pixel 6 | Naomi | bbva | 10
 (run)
 ----------------------------------------
+
+(assert (orden (id 11) (tipoproducto 3) (idproducto 2) (idcliente 5) (tarjeta nu) (cantidad 1))) ; Accesorio | Cargador | Naomi | nu | 1
+(run)
+----------------------------------------
+
+(assert (orden (id 12) (tipoproducto 2) (idproducto 4) (idcliente 2) (tarjeta contado) (cantidad 2))) ; Computadora | ZenBook 14 | Daniela | contado | 2
+(run)
+----------------------------------------
+
+(assert (orden (id 13) (tipoproducto 1) (idproducto 4) (idcliente 2) (tarjeta nu) (cantidad 1))) ; Celular | OnePlus 9 Pro | Daniela | nu | 1
+(run)
+----------------------------------------
+
+(assert (orden (id 14) (tipoproducto 1) (idproducto 3) (idcliente 2) (tarjeta nu) (cantidad 1))) ; Celular | Mi 11 | Daniela | nu | 1
+(run)
+----------------------------------------
+
+(assert (orden (id 15) (tipoproducto 2) (idproducto 2) (idcliente 1) (tarjeta nu) (cantidad 1))) ; Computadora | Spectre x360 | Daniela | nu | 1
+(run)
+----------------------------------------

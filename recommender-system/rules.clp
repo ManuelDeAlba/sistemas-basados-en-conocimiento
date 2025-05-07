@@ -1,65 +1,72 @@
 ;? REGLAS QUE MODIFICAN EL STOCK DE LOS PRODUCTOS SI HAY SUFICIENTE STOCK (ORDENPROCESADA SIRVE PARA MARCAR QUE YA FUE EDITADO Y NO DEBEN EJECUTARSE OTRA VEZ CIERTAS REGLAS)
 ; 1) Actualizar stock celulares solo si hay suficiente, si no, otra regla manda mensaje
 (defrule actualizar-stock-celulares
-    (declare (salience 10)) ; Ejecutar antes de las reglas de validación
+    (declare (salience 10)) ; Ejecutar antes de las reglas normales
     (orden (id ?idorden) (tipoproducto 1) (idproducto ?idproducto) (cantidad ?cantidad) (idcliente ?idcliente))
     (cliente (id ?idcliente) (nombre ?n))
-    ?celular <- (celular (marca ?marca) (modelo ?modelo) (idproducto ?idproducto) (stock ?stock))
+    ?celular <- (celular (marca ?marca) (modelo ?modelo) (idproducto ?idproducto) (precio ?precio) (stock ?stock))
     (not (ordenprocesada ?idorden)) ; Evitar que se procese la misma orden varias veces
     =>
     ; Si hay suficiente stock, actualizarlo
     ; Si no, otra regla se encarga de cancelar la orden
     (if (>= ?stock ?cantidad) then
         (bind ?nuevostock (- ?stock ?cantidad)) ; Calcular nuevo stock
+        (bind ?total (* ?precio ?cantidad)) ; Calcular total de la compra
         (modify ?celular (stock ?nuevostock)) ; Actualizar stock en la base de datos
         (assert (ordenprocesada ?idorden)) ; Marcar la orden como procesada
         ; Imprimir mensaje de stock actualizado
-        (printout t ?n " realizó una compra (" ?marca " " ?modelo " - x" ?cantidad "), se ha actualizado el stock (" ?stock " -> " ?nuevostock ")" crlf)
+        (printout t ?n " realizó una compra (" ?marca " " ?modelo " - x" ?cantidad " = $" ?total "), se ha actualizado el stock (" ?stock " -> " ?nuevostock ")" crlf)
     )
 )
 
 ; 2) Actualizar stock computadoras solo si hay suficiente, si no, otra regla manda mensaje
 (defrule actualizar-stock-computadoras
-    (declare (salience 10)) ; Ejecutar antes de las reglas de validación
+    (declare (salience 10)) ; Ejecutar antes de las reglas normales
     (orden (id ?idorden) (tipoproducto 2) (idproducto ?idproducto) (cantidad ?cantidad) (idcliente ?idcliente))
     (cliente (id ?idcliente) (nombre ?n))
-    ?computadora <- (computadora (marca ?marca) (modelo ?modelo) (idproducto ?idproducto) (stock ?stock))
+    ?computadora <- (computadora (marca ?marca) (modelo ?modelo) (idproducto ?idproducto) (precio ?precio) (stock ?stock))
     (not (ordenprocesada ?idorden)) ; Evitar que se procese la misma orden varias veces
     =>
     ; Si hay suficiente stock, actualizarlo
     ; Si no, otra regla se encarga de cancelar la orden
     (if (>= ?stock ?cantidad) then
         (bind ?nuevostock (- ?stock ?cantidad)) ; Calcular nuevo stock
+        (bind ?total (* ?precio ?cantidad)) ; Calcular total de la compra
         (modify ?computadora (stock ?nuevostock)) ; Actualizar stock en la base de datos
         (assert (ordenprocesada ?idorden)) ; Marcar la orden como procesada
         ; Imprimir mensaje de stock actualizado
-        (printout t ?n " realizó una compra (" ?marca " " ?modelo " - x" ?cantidad "), se ha actualizado el stock (" ?stock " -> " ?nuevostock ")" crlf)
+        (printout t ?n " realizó una compra (" ?marca " " ?modelo " - x" ?cantidad " = $" ?total "), se ha actualizado el stock (" ?stock " -> " ?nuevostock ")" crlf)
     )
 )
 
 ; 3) Actualizar stock accesorios solo si hay suficiente, si no, otra regla manda mensaje
 (defrule actualizar-stock-accesorios
-    (declare (salience 10)) ; Ejecutar antes de las reglas de validación
-    (orden (id ?idorden) (tipoproducto 3) (idproducto ?idproducto) (cantidad ?cantidad) (idcliente ?idcliente))
+    (declare (salience 10)) ; Ejecutar antes de las reglas normales
+    (orden (id ?idorden) (tipoproducto 3) (idproducto ?idproducto) (cantidad ?cantidad) (idcliente ?idcliente) (tarjeta ?tarjeta))
     (cliente (id ?idcliente) (nombre ?n))
-    ?accesorio <- (accesorio (nombre ?nombreaccesorio) (idproducto ?idproducto) (stock ?stock))
+    ?accesorio <- (accesorio (nombre ?nombreaccesorio) (idproducto ?idproducto) (precio ?precio) (stock ?stock))
     (not (ordenprocesada ?idorden)) ; Evitar que se procese la misma orden varias veces
     =>
     ; Si hay suficiente stock, actualizarlo
     ; Si no, otra regla se encarga de cancelar la orden
     (if (>= ?stock ?cantidad) then
         (bind ?nuevostock (- ?stock ?cantidad)) ; Calcular nuevo stock
+        (bind ?total (* ?precio ?cantidad)) ; Calcular total de la compra
         (modify ?accesorio (stock ?nuevostock)) ; Actualizar stock en la base de datos
         (assert (ordenprocesada ?idorden)) ; Marcar la orden como procesada
         ; Imprimir mensaje de stock actualizado
-        (printout t ?n " realizó una compra (" ?nombreaccesorio " - x" ?cantidad "), se ha actualizado el stock (" ?stock " -> " ?nuevostock ")" crlf)
+        (if (neq ?tarjeta gratis) then
+            (printout t ?n " realizó una compra (" ?nombreaccesorio " - x" ?cantidad " = $" ?total "), se ha actualizado el stock (" ?stock " -> " ?nuevostock ")" crlf)
+        else
+            (printout t ?n ", con tu regalo de (" ?nombreaccesorio " - x" ?cantidad "), se ha actualizado el stock (" ?stock " -> " ?nuevostock ") y se le ha regalado el producto." crlf)
+        )
     )
 )
 
 ;? REGLAS DE VALIDACIÓN QUE ELIMINAN LA ORDEN SI NO HAY STOCK SUFICIENTE (SE TIENEN QUE EJECUTAR ANTES DE CUALQUIER OTRO MENSAJE O REGLA Y NO NECESITA UNA BANDERA PARA MARCARLA PORQUE SE ELIMINA LA ORDEN)
 ; 4) Validar si hay suficiente stock de celulares. Si no, se cancela la orden
 (defrule validar-stock-celulares
-    (declare (salience 10)) ; Ejecutar antes de las reglas de validación
+    (declare (salience 10)) ; Ejecutar antes de las reglas normales
     ?orden <- (orden (id ?idorden) (tipoproducto 1) (idproducto ?idproducto) (idcliente ?idcliente) (cantidad ?cantidad))
     ?celular <- (celular (idproducto ?idproducto) (stock ?stock))
     (cliente (id ?idcliente) (nombre ?n))
@@ -73,7 +80,7 @@
 
 ; 5) Validar si hay suficiente stock de computadoras. Si no, se cancela la orden
 (defrule validar-stock-computadoras
-    (declare (salience 10)) ; Ejecutar antes de las reglas de validación
+    (declare (salience 10)) ; Ejecutar antes de las reglas normales
     ?orden <- (orden (id ?idorden) (tipoproducto 2) (idproducto ?idproducto) (idcliente ?idcliente) (cantidad ?cantidad))
     ?computadora <- (computadora (idproducto ?idproducto) (stock ?stock))
     (cliente (id ?idcliente) (nombre ?n))
@@ -87,7 +94,7 @@
 
 ; 6) Validar si hay suficiente stock de accesorios. Si no, se cancela la orden
 (defrule validar-stock-accesorios
-    (declare (salience 10)) ; Ejecutar antes de las reglas de validación
+    (declare (salience 10)) ; Ejecutar antes de las reglas normales
     ?orden <- (orden (id ?idorden) (tipoproducto 3) (idproducto ?idproducto) (idcliente ?idcliente) (cantidad ?cantidad))
     ?accesorio <- (accesorio (idproducto ?idproducto) (stock ?stock))
     (cliente (id ?idcliente) (nombre ?n))
@@ -127,9 +134,9 @@
     ; Compra de iphone
     (orden (id ?idorden2) (tipoproducto 1) (idproducto 2) (tarjeta contado) (idcliente ?id) (cantidad ?cantiphone))
     ; Producto thinkpad
-    ?compu <- (computadora (idproducto 3) (precio ?p1) (stock ?stockthink))
+    (computadora (idproducto 3) (precio ?p1))
     ; Producto iphone
-    ?cel <- (celular (idproducto 2) (precio ?p2) (stock ?stockiphone))
+    (celular (idproducto 2) (precio ?p2))
     (cliente (id ?id) (nombre ?n))
     ; Evitar que se procese la misma orden varias veces
     (not (and (orden-vale-thinkpad-iphone16 ?idorden) (orden-vale-thinkpad-iphone16 ?idorden2)))
@@ -144,9 +151,9 @@
         (assert (orden-vale-thinkpad-iphone16 ?idorden)) ; Marcar la orden como procesada
         (assert (orden-vale-thinkpad-iphone16 ?idorden2)) ; Marcar la orden como procesada
         ; Crear el vale
-        (assert (vale (idcliente ?id) (texto ?n ", te ofrecemos " ?vales " vales de 100 pesos ($"(* ?vales 100)") por tu compra de " ?total " pesos.")))
+        (assert (vale (idcliente ?id) (valor (* ?vales 100)) (texto ?n ", te ofrecemos " ?vales " vales de 100 pesos ($"(* ?vales 100)") por tu compra de " ?total " pesos.")))
         ; Mostrar el mensaje
-        (printout t ?n ", te ofrecemos " ?vales " vales de 100 pesos ($"(* ?vales 100)") por tu compra de " ?total " pesos." crlf)
+        (printout t ?n ", te ofrecemos " ?vales " vales de 100 pesos ($"(* ?vales 100)") por tu compra de " ?total " pesos. ¡Utilízalos cuando desees!" crlf)
     )
 )
 
@@ -188,7 +195,7 @@
 
 ; 13) Detectar si un cliente es minorista o mayorista < 10, > 10 en accesorios
 (defrule detectar-cliente-minorista-mayorista-accesorio
-    (orden (id ?idorden) (tipoproducto 3) (idproducto ?idproducto) (idcliente ?idcliente) (cantidad ?cantidad))
+    (orden (id ?idorden) (tipoproducto 3) (idproducto ?idproducto) (idcliente ?idcliente) (cantidad ?cantidad) (tarjeta ?tarjeta&:(neq ?tarjeta gratis)))
     (cliente (id ?idcliente) (nombre ?nombre))
     (accesorio (idproducto ?idproducto) (nombre ?nombreaccesorio))
     (not (ordensegmentada ?idorden)) ; Evitar que se procese la misma orden varias veces
@@ -209,12 +216,69 @@
     (bind ?descuento (* ?total 0.1)) ; Calcular el descuento
     (bind ?preciofinal (- ?total ?descuento)) ; Calcular el precio final
     (assert (orden-descuento-celulares-bbva ?id)) ; Marcar la orden como procesada
-    (printout t ?n ", se te descontó el 10% (" ?descuento ") del total por tu compra de 10 celulares o más con BBVA. Paga $" ?preciofinal crlf)
+    (printout t ?n ", se te descontó el 10% ($" ?descuento ") del total por tu compra de 10 celulares o más con BBVA. Paga $" ?preciofinal crlf)
 )
 
-; 15) Ofrecer un descuento del 5% en la compra de un accesorio si el cliente tiene una tarjeta Nu
-; 16) Ofrecer un vale de 200 pesos en la compra de una computadora al contado
-; 17) Regalar una funda con la compra de un Xiami Mi 11 (crear una orden y en tarjeta poner gratis)
-; 18) Regalar una mica con la compra de un iPhone 16 (crear una orden y en tarjeta poner gratis)
+; 15) Ofrecer 5% de cashback en la compra de un accesorio si el cliente paga con una tarjeta Nu
+(defrule ofrecer-cashback-accesorio-nu
+    (orden (tipoproducto 3) (idproducto ?idproducto) (tarjeta nu) (idcliente ?id) (cantidad ?cantidad))
+    (accesorio (idproducto ?idproducto) (precio ?precio))
+    (cliente (id ?id) (nombre ?n))
+    (not (orden-cashback-accesorio-nu ?id)) ; Evitar que se procese la misma orden varias veces
+    =>
+    (bind ?total (* ?precio ?cantidad)) ; Calcular el total sin descuento
+    (bind ?cashback (* ?total 0.05)) ; Calcular el cashback
+    (assert (orden-cashback-accesorio-nu ?id)) ; Marcar la orden como procesada
+    (printout t ?n ", se te ha reembolsado un 5% de cashback ($" ?cashback ") por tu compra de un accesorio con tarjeta Nu." crlf)
+)
+
+; 16) Ofrecer un vale de 200 pesos por cada computadora Asus ZenBook 14 pagada al contado
+(defrule ofrecer-vale-computadora-zenbook14
+    ; Orden de computadora
+    (orden (id ?idorden) (tipoproducto 2) (idproducto 4) (tarjeta contado) (idcliente ?id) (cantidad ?cantidad))
+    (cliente (id ?id) (nombre ?n))
+    ; Producto computadora
+    (computadora (idproducto 4) (precio ?precio))
+    ; Evitar que se procese la misma orden varias veces
+    (not (orden-vale-zenbook ?idorden))
+    =>
+    ; Calcular el total de la compra
+    (bind ?total (* ?precio ?cantidad))
+    (assert (orden-vale-zenbook ?idorden)) ; Marcar la orden como procesada
+    ; Crear los vales
+    (assert (vale (idcliente ?id) (valor (* ?cantidad 200)) (texto ?n ", te ofrecemos " ?cantidad " vales de 200 pesos ($"(* ?cantidad 200)") por tu compra de " ?total " pesos.")))
+    ; Mostrar el mensaje
+    (printout t ?n ", te ofrecemos " ?cantidad " vales de 200 pesos ($"(* ?cantidad 200)") por tu compra de " ?cantidad " Asus ZenBook 14. ¡Utilízalos cuando desees!" crlf)
+)
+
+; 17) Regalar audifonos con la compra de un Xiami Mi 11 (crear una orden y en tarjeta poner gratis)
+; En la regla de disminuir stock se toma en cuenta el mensaje cuando es gratis (no se hace lo mismo con los demás productos porque nunca se regalan)
+(defrule regalar-audifonos-xiaomi
+    (orden (tipoproducto 1) (idproducto 3) (idcliente ?id))
+    (cliente (id ?id) (nombre ?nombre))
+    ; Evitar que se procese la misma orden varias veces
+    (not (orden-regalo-audifonos-xiaomi ?id))
+    =>
+    (assert (orden-regalo-audifonos-xiaomi ?id)) ; Marcar la orden como procesada
+    ; Crear el hecho de regalo
+    (assert (orden (tipoproducto 3) (idproducto 4) (idcliente ?id) (tarjeta gratis) (cantidad 1)))
+    ; Mostrar el mensaje
+    (printout t ?nombre ", te regalamos unos audifonos con tu compra de un Xiaomi Mi 11." crlf)
+)
+
+; 18) Regalar una USB con la compra de una HP Spectre x360 (crear una orden y en tarjeta poner gratis)
+(defrule regalar-usb-spectre360
+    (orden (tipoproducto 2) (idproducto 2) (idcliente ?id))
+    (cliente (id ?id) (nombre ?nombre))
+    ; Evitar que se procese la misma orden varias veces
+    (not (orden-regalo-usb-xiaomi ?id))
+    =>
+    (assert (orden-regalo-usb-xiaomi ?id)) ; Marcar la orden como procesada
+    ; Crear el hecho de regalo
+    (assert (orden (tipoproducto 3) (idproducto 5) (idcliente ?id) (tarjeta gratis) (cantidad 1)))
+    ; Mostrar el mensaje
+    (printout t ?nombre ", te regalamos una USB con tu compra de una computadora HP Spectre x360." crlf)
+)
+
 ; 19) Regalar un cargador con la compra de un Samsung S21 (crear una orden y en tarjeta poner gratis)
 ; 20) Hacer un descuento de una laptop si el cliente compra un celular

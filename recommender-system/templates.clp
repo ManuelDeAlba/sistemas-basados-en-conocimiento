@@ -50,5 +50,6 @@
 (deftemplate vale
     (slot id (default-dynamic (gensym*)))
     (slot idcliente)
+    (slot valor)
     (multislot texto)
 )
