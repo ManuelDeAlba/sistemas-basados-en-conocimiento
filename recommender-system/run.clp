@@ -47,3 +47,7 @@
 (assert (orden (id 9) (tipoproducto 3) (idproducto 1) (idcliente 4) (tarjeta nu) (cantidad 1))) ; Accesorio | Funda | Leonardo | nu | 1
 (run)
 ----------------------------------------
+
+(assert (orden (id 10) (tipoproducto 1) (idproducto 5) (idcliente 5) (tarjeta bbva) (cantidad 10))) ; Celular | Pixel 6 | Naomi | bbva | 10
+(run)
+----------------------------------------
