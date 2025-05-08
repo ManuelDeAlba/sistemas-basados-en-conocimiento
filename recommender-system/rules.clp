@@ -58,7 +58,7 @@
         (if (neq ?tarjeta gratis) then
             (printout t ?n " realizó una compra (" ?nombreaccesorio " - x" ?cantidad " = $" ?total "), se ha actualizado el stock (" ?stock " -> " ?nuevostock ")" crlf)
         else
-            (printout t ?n ", con tu regalo de (" ?nombreaccesorio " - x" ?cantidad "), se ha actualizado el stock (" ?stock " -> " ?nuevostock ") y se le ha regalado el producto." crlf)
+            (printout t ?n ", con tu regalo de (" ?nombreaccesorio " - x" ?cantidad ") se ha actualizado el stock (" ?stock " -> " ?nuevostock ")." crlf)
         )
     )
 )
@@ -216,7 +216,7 @@
     (bind ?descuento (* ?total 0.1)) ; Calcular el descuento
     (bind ?preciofinal (- ?total ?descuento)) ; Calcular el precio final
     (assert (orden-descuento-celulares-bbva ?id)) ; Marcar la orden como procesada
-    (printout t ?n ", se te descontó el 10% ($" ?descuento ") del total por tu compra de 10 celulares o más con BBVA. Paga $" ?preciofinal crlf)
+    (printout t ?n ", se te descontó el 10% ($" ?descuento ") del total por tu compra de 10 celulares o más con BBVA. Paga $" ?preciofinal " en lugar de $" ?total crlf)
 )
 
 ; 15) Ofrecer 5% de cashback en la compra de un accesorio si el cliente paga con una tarjeta Nu
