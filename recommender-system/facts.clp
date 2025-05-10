@@ -4,6 +4,7 @@
     (celular (tipoproducto 1) (idproducto 3) (marca "Xiaomi") (modelo "Mi 11") (precio 749) (color rojo) (stock 20))
     (celular (tipoproducto 1) (idproducto 4) (marca "OnePlus") (modelo "9 Pro") (precio 969) (color azul) (stock 15))
     (celular (tipoproducto 1) (idproducto 5) (marca "Google") (modelo "Pixel 6") (precio 599) (color amarillo) (stock 25))
+    (celular (tipoproducto 1) (idproducto 6) (marca "Samsung") (modelo "Galaxy S23") (precio 999) (color negro) (stock 10))
 )
 
 (deffacts computadoras
@@ -19,6 +20,7 @@
     (accesorio (tipoproducto 3) (idproducto 3) (nombre Mica) (precio 5) (stock 20))
     (accesorio (tipoproducto 3) (idproducto 4) (nombre Audifonos) (precio 20) (stock 10))
     (accesorio (tipoproducto 3) (idproducto 5) (nombre USB) (precio 30) (stock 10))
+    (accesorio (tipoproducto 3) (idproducto 6) (nombre "Licencia office") (precio 100) (stock 10))
 )
 
 (deffacts tarjetas

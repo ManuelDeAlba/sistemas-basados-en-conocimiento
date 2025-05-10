@@ -71,3 +71,11 @@
 (assert (orden (id 15) (tipoproducto 2) (idproducto 2) (idcliente 1) (tarjeta nu) (cantidad 1))) ; Computadora | Spectre x360 | Daniela | nu | 1
 (run)
 ----------------------------------------
+
+(assert (orden (id 16) (tipoproducto 1) (idproducto 6) (idcliente 1) (tarjeta nu) (cantidad 1))) ; Celular | Galaxy S23 | Manuel | nu | 1
+(run)
+----------------------------------------
+
+(assert (orden (id 17) (tipoproducto 2) (idproducto 1) (idcliente 5) (tarjeta contado) (cantidad 1))) ; Computadora | Dell XPS 13 | Naomi | contado | 1
+(run)
+----------------------------------------

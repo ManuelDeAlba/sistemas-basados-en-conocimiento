@@ -252,7 +252,7 @@
 )
 
 ; 17) Regalar audifonos con la compra de un Xiami Mi 11 (crear una orden y en tarjeta poner gratis)
-; En la regla de disminuir stock se toma en cuenta el mensaje cuando es gratis (no se hace lo mismo con los demás productos porque nunca se regalan)
+; En la regla de disminuir stock se toma en cuenta cuando es gratis para mandar otro mensaje (no se hace lo mismo con los demás tipos de productos porque nunca se regalan)
 (defrule regalar-audifonos-xiaomi
     (orden (tipoproducto 1) (idproducto 3) (idcliente ?id))
     (cliente (id ?id) (nombre ?nombre))
@@ -280,5 +280,29 @@
     (printout t ?nombre ", te regalamos una USB con tu compra de una computadora HP Spectre x360." crlf)
 )
 
-; 19) Regalar un cargador con la compra de un Samsung S21 (crear una orden y en tarjeta poner gratis)
-; 20) Hacer un descuento de una laptop si el cliente compra un celular
+; 19) Regalar un cargador con la compra de un Samsung Galaxy S23 (crear una orden y en tarjeta poner gratis)
+(defrule regalar-cargador-samsungs23
+    (orden (tipoproducto 1) (idproducto 6) (idcliente ?id))
+    (cliente (id ?id) (nombre ?nombre))
+    ; Evitar que se procese la misma orden varias veces
+    (not (orden-regalo-cargador-samsungs23 ?id))
+    =>
+    (assert (orden-regalo-cargador-samsungs23 ?id)) ; Marcar la orden como procesada
+    ; Crear el hecho de regalo
+    (assert (orden (tipoproducto 3) (idproducto 2) (idcliente ?id) (tarjeta gratis) (cantidad 1)))
+    ; Mostrar el mensaje
+    (printout t ?nombre ", te regalamos un cargador con tu compra de un Samsung Galaxy S23." crlf)
+)
+
+; 20) Regalar una licencia de office (1 mes) en la compra de una laptop (Dell XPS 13) si el cliente es menor de edad
+(defrule ofrecer-office-laptop-estudiante
+    (orden (id ?idorden) (tipoproducto 2) (idproducto 1) (idcliente ?id))
+    (cliente (id ?id) (nombre ?n) (edad ?edad&:(< ?edad 18)))
+    (computadora (marca ?marca) (modelo ?modelo) (idproducto 1))
+    (not (orden-ofrecer-office ?idorden)) ; Evitar que se procese la misma orden varias veces
+    =>
+    (assert (orden-ofrecer-office ?idorden)) ; Marcar la orden como procesada
+    ; Crear el hecho de regalo
+    (assert (orden (tipoproducto 3) (idproducto 6) (idcliente ?id) (tarjeta gratis) (cantidad 1)))
+    (printout t ?n ", te ofrecemos una licencia de office (1 mes) por la compra de tu laptop " ?marca " " ?modelo "." crlf)
+)
