@@ -68,13 +68,13 @@
 (defrule validar-stock-celulares
     (declare (salience 10)) ; Ejecutar antes de las reglas normales
     ?orden <- (orden (id ?idorden) (tipoproducto 1) (idproducto ?idproducto) (idcliente ?idcliente) (cantidad ?cantidad))
-    ?celular <- (celular (idproducto ?idproducto) (stock ?stock))
+    ?celular <- (celular (idproducto ?idproducto) (stock ?stock) (marca ?marca) (modelo ?modelo))
     (cliente (id ?idcliente) (nombre ?n))
     (not (ordenprocesada ?idorden)) ; Evitar que se procese la misma orden varias veces
     =>
     (if (< ?stock ?cantidad) then
         (retract ?orden) ; Eliminar la orden si no hay stock
-        (printout t ?n ", no hay suficiente stock para el celular con id " ?idproducto ". La orden con id " ?idorden " ha sido cancelada. Intenta con una cantidad menor." crlf)
+        (printout t ?n ", no hay suficiente stock para el celular '" ?marca " " ?modelo "'. La orden con id " ?idorden " ha sido cancelada. Stock restante: " ?stock "." crlf)
     )
 )
 
@@ -82,13 +82,13 @@
 (defrule validar-stock-computadoras
     (declare (salience 10)) ; Ejecutar antes de las reglas normales
     ?orden <- (orden (id ?idorden) (tipoproducto 2) (idproducto ?idproducto) (idcliente ?idcliente) (cantidad ?cantidad))
-    ?computadora <- (computadora (idproducto ?idproducto) (stock ?stock))
+    ?computadora <- (computadora (idproducto ?idproducto) (stock ?stock) (marca ?marca) (modelo ?modelo))
     (cliente (id ?idcliente) (nombre ?n))
     (not (ordenprocesada ?idorden)) ; Evitar que se procese la misma orden varias veces
     =>
     (if (< ?stock ?cantidad) then
         (retract ?orden) ; Eliminar la orden si no hay stock
-        (printout t ?n ", no hay suficiente stock para la computadora con id " ?idproducto ". La orden con id " ?idorden " ha sido cancelada. Intenta con una cantidad menor." crlf)
+        (printout t ?n ", no hay suficiente stock para la computadora '" ?marca " " ?modelo "'. La orden con id " ?idorden " ha sido cancelada. Stock restante: " ?stock "." crlf)
     )
 )
 
@@ -96,13 +96,13 @@
 (defrule validar-stock-accesorios
     (declare (salience 10)) ; Ejecutar antes de las reglas normales
     ?orden <- (orden (id ?idorden) (tipoproducto 3) (idproducto ?idproducto) (idcliente ?idcliente) (cantidad ?cantidad))
-    ?accesorio <- (accesorio (idproducto ?idproducto) (stock ?stock))
+    ?accesorio <- (accesorio (idproducto ?idproducto) (stock ?stock) (nombre ?nombreaccesorio))
     (cliente (id ?idcliente) (nombre ?n))
     (not (ordenprocesada ?idorden)) ; Evitar que se procese la misma orden varias veces
     =>
     (if (< ?stock ?cantidad) then
         (retract ?orden) ; Eliminar la orden si no hay stock
-        (printout t ?n ", no hay suficiente stock para el accesorio con id " ?idproducto ". La orden con id " ?idorden " ha sido cancelada. Intenta con una cantidad menor." crlf)
+        (printout t ?n ", no hay suficiente stock para el accesorio '" ?nombreaccesorio "'. La orden con id " ?idorden " ha sido cancelada. Stock restante: " ?stock "." crlf)
     )
 )
 
@@ -114,7 +114,7 @@
     (not (orden-ofrecer-meses ?id)) ; Evitar que se procese la misma orden varias veces
     =>
     (assert (orden-ofrecer-meses ?id)) ; Marcar la orden como procesada
-    (printout t ?n ", te ofrecemos 24 meses sin intereses en tu compra de un iPhone16 con tarjeta banamex." crlf)
+    (printout t ?n ", te ofrecemos 24 meses sin intereses en tu compra de un iPhone 16 con tarjeta banamex." crlf)
 )
 
 ; 8) En la compra de un Samsung S21 con tarjeta liverpool visa, ofrece 12 meses sin intereses
@@ -151,7 +151,7 @@
         (assert (orden-vale-thinkpad-iphone16 ?idorden)) ; Marcar la orden como procesada
         (assert (orden-vale-thinkpad-iphone16 ?idorden2)) ; Marcar la orden como procesada
         ; Crear el vale
-        (assert (vale (idcliente ?id) (valor (* ?vales 100)) (texto ?n ", te ofrecemos " ?vales " vales de 100 pesos ($"(* ?vales 100)") por tu compra de " ?total " pesos.")))
+        (assert (vale (idcliente ?id) (valor (* ?vales 100)) (texto ?n ", te ofrecemos " ?vales " vales de 100 pesos ($"(* ?vales 100)") por tu compra de " ?total " pesos. ¡Utilízalos cuando desees!")))
         ; Mostrar el mensaje
         (printout t ?n ", te ofrecemos " ?vales " vales de 100 pesos ($"(* ?vales 100)") por tu compra de " ?total " pesos. ¡Utilízalos cuando desees!" crlf)
     )
@@ -178,7 +178,7 @@
     =>
     (assert (ordensegmentada ?idorden)) ; Marcar la orden como procesada
     ; Imprimir mensaje de cliente minorista o mayorista < 10 o >= 10
-    (printout t ?nombre ", compraste " ?cantidad " " ?marca " " ?modelo ", eres un cliente " (if (< ?cantidad 10) then "minorista" else "mayorista") "." crlf)
+    (printout t ?nombre " compró " ?cantidad " " ?marca " " ?modelo ", es un cliente " (if (< ?cantidad 10) then "MINORISTA" else "MAYORISTA") "." crlf)
 )
 
 ; 12) Detectar si un cliente es minorista o mayorista < 10, > 10 en computadoras
@@ -190,7 +190,7 @@
     =>
     (assert (ordensegmentada ?idorden)) ; Marcar la orden como procesada
     ; Imprimir mensaje de cliente minorista o mayorista < 10 o >= 10
-    (printout t ?nombre ", compraste " ?cantidad " " ?marca " " ?modelo ", eres un cliente " (if (< ?cantidad 10) then "minorista" else "mayorista") "." crlf)
+    (printout t ?nombre " compró " ?cantidad " " ?marca " " ?modelo ", es un cliente " (if (< ?cantidad 10) then "MINORISTA" else "MAYORISTA") "." crlf)
 )
 
 ; 13) Detectar si un cliente es minorista o mayorista < 10, > 10 en accesorios
@@ -202,7 +202,7 @@
     =>
     (assert (ordensegmentada ?idorden)) ; Marcar la orden como procesada
     ; Imprimir mensaje de cliente minorista o mayorista < 10 o >= 10
-    (printout t ?nombre ", compraste " ?cantidad " " ?nombreaccesorio ", eres un cliente " (if (< ?cantidad 10) then "minorista" else "mayorista") "." crlf)
+    (printout t ?nombre " compró " ?cantidad " " ?nombreaccesorio ", es un cliente " (if (< ?cantidad 10) then "MINORISTA" else "MAYORISTA") "." crlf)
 )
 
 ; 14) Ofrecer un descuento del 10% en la compra actual si se piden 10 celulares o más y el cliente tiene una tarjeta BBVA
@@ -246,7 +246,7 @@
     (bind ?total (* ?precio ?cantidad))
     (assert (orden-vale-zenbook ?idorden)) ; Marcar la orden como procesada
     ; Crear los vales
-    (assert (vale (idcliente ?id) (valor (* ?cantidad 200)) (texto ?n ", te ofrecemos " ?cantidad " vales de 200 pesos ($"(* ?cantidad 200)") por tu compra de " ?total " pesos.")))
+    (assert (vale (idcliente ?id) (valor (* ?cantidad 200)) (texto ?n ", te ofrecemos " ?cantidad " vales de 200 pesos ($"(* ?cantidad 200)") por tu compra de " ?total " pesos. ¡Utilízalos cuando desees!")))
     ; Mostrar el mensaje
     (printout t ?n ", te ofrecemos " ?cantidad " vales de 200 pesos ($"(* ?cantidad 200)") por tu compra de " ?cantidad " Asus ZenBook 14. ¡Utilízalos cuando desees!" crlf)
 )
