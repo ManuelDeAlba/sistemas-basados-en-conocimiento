@@ -151,9 +151,9 @@
         (assert (orden-vale-thinkpad-iphone16 ?idorden)) ; Marcar la orden como procesada
         (assert (orden-vale-thinkpad-iphone16 ?idorden2)) ; Marcar la orden como procesada
         ; Crear el vale
-        (assert (vale (idcliente ?id) (valor (* ?vales 100)) (texto ?n ", te ofrecemos " ?vales " vales de 100 pesos ($"(* ?vales 100)") por tu compra de " ?total " pesos. ¡Utilízalos cuando desees!")))
+        (assert (vale (idcliente ?id) (valor (* ?vales 100)) (texto ?n ", te ofrecemos " ?vales " vales de 100 pesos ($"(* ?vales 100)") por tu compra de " ?total " pesos en los siguientes productos: ThinkPad X1 Carbon x" ?cantthink " y iPhone 16 x" ?cantiphone ". ¡Utilízalos cuando desees!")))
         ; Mostrar el mensaje
-        (printout t ?n ", te ofrecemos " ?vales " vales de 100 pesos ($"(* ?vales 100)") por tu compra de " ?total " pesos. ¡Utilízalos cuando desees!" crlf)
+        (printout t ?n ", te ofrecemos " ?vales " vales de 100 pesos ($"(* ?vales 100)") por tu compra de " ?total " pesos en los siguientes productos: ThinkPad X1 Carbon x" ?cantthink " y iPhone 16 x" ?cantiphone ". ¡Utilízalos cuando desees!" crlf)
     )
 )
 
