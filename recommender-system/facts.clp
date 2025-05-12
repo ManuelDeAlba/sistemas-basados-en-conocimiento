@@ -20,7 +20,8 @@
     (accesorio (tipoproducto 3) (idproducto 3) (nombre Mica) (precio 99) (stock 20))
     (accesorio (tipoproducto 3) (idproducto 4) (nombre Audifonos) (precio 399) (stock 10))
     (accesorio (tipoproducto 3) (idproducto 5) (nombre USB) (precio 599) (stock 10))
-    (accesorio (tipoproducto 3) (idproducto 6) (nombre "Licencia office") (precio 1999) (stock 10))
+    (accesorio (tipoproducto 3) (idproducto 6) (nombre "Licencia office (1 mes)") (precio 200) (stock 10))
+    (accesorio (tipoproducto 3) (idproducto 7) (nombre "Licencia office (1 año)") (precio 1999) (stock 10))
 )
 
 (deffacts tarjetas
